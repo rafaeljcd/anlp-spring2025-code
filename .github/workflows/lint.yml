@@ -15,10 +15,23 @@ concurrency:
 jobs:
   ruff:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
       - name: Run Ruff
         uses: astral-sh/ruff-action@v3
         with:
-          args: check --output-format=github
+          args: format --check . --select I --output-format=github
+
+      - name: Commit and push changes if any
+        run: |
+          if [[ -n "$(git diff --exit-code || echo 'has_changes')" ]]; then
+            git config --global user.name 'github-actions'
+            git config --global user.email 'github-actions@github.com'
+            git commit -am "Apply Ruff formatting"
+            git push
+          else
+            echo "No changes to commit"
+          fi

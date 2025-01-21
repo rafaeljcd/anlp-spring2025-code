@@ -23,7 +23,7 @@ jobs:
       - name: Run Ruff
         uses: astral-sh/ruff-action@v3
         with:
-          args: format --check .
+          args: check --fix .
 
       - name: Commit and push changes if any
         run: |
